@@ -1,29 +1,18 @@
-document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('gesturechange', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('gestureend', function (e) {
-    e.preventDefault();
-});
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Hide splash screen and show chat container after 2 seconds
-    setTimeout(() => {
-        const logo = document.getElementById('logo');
-        logo.style.transform = 'rotate(360deg) scale(0)';
-        document.getElementById('splash').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('chat-container').classList.remove('hidden');
-            loadChatHistory();
-        }, 2000);
-    }, 2000);
+    // Скрин-заставка
+    const splashScreen = document.getElementById('splash');
+    const chatContainer = document.getElementById('chat-container');
 
-    // Send message to the chat
+    setTimeout(() => {
+        splashScreen.style.opacity = '0';
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            chatContainer.classList.remove('hidden');
+            loadChatHistory(); // Загружаем историю чата после заставки
+        }, 2000); // Убедитесь, что задержка соответствует времени анимации
+    }, 2000); // Задержка перед скрытием заставки
+
+    // Функция отправки сообщения
     document.getElementById('send-button').addEventListener('click', sendMessage);
     document.getElementById('user-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -41,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.value = '';
 
             try {
-                // Send message to server
+                // Отправка сообщения на сервер
                 const response = await fetch('http://127.0.0.1:5000/message', {
                     method: 'POST',
                     headers: {
@@ -76,31 +65,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadChatHistory() {
         const messages = JSON.parse(localStorage.getItem('chatHistory')) || [];
-        messages.forEach(message => {
-            appendMessage(message.text, message.sender);
+        messages.forEach(msg => {
+            appendMessage(msg.text, msg.sender);
         });
     }
 
-    // Swipe to open side menu
-    let touchStartX = 0;
-    let touchEndX = 0;
+    // Обработка бокового меню с использованием свайпа
+let touchStartX = 0;
+let touchEndX = 0;
+const sideMenu = document.getElementById(‘side-menu’);
 
-    document.body.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-
-    document.body.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-
-    function handleSwipe() {
-        if (touchEndX - touchStartX > 50) {
-            document.getElementById('side-menu').style.left = '0';
-        } else if (touchStartX - touchEndX > 50) {
-            document.getElementById('side-menu').style.left = '-250px';
-        }
-    }
+document.body.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
 });
 
+document.body.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    if (touchEndX - touchStartX > 50) {
+        openMenu();
+    } else if (touchStartX - touchEndX > 50) {
+        closeMenu();
+    }
+}
+
+function openMenu() {
+    sideMenu.style.left = '0';
+}
+
+function closeMenu() {
+    sideMenu.style.left = '-250px';
+}
+
+// Кнопка закрытия меню
+document.getElementById('close-menu').addEventListener('click', closeMenu);
+
+// Регулировка положения поля ввода при появлении клавиатуры
+const inputContainer = document.getElementById('input-container');
+
+window.addEventListener('resize', () => {
+    if (window.innerHeight < 600) { // Предполагаем, что клавиатура видима
+        inputContainer.style.position = 'absolute';
+        inputContainer.style.bottom = '60px'; // Настройте в зависимости от высоты клавиатуры
+    } else {
+        inputContainer.style.position = 'fixed';
+        inputContainer.style.bottom = '0';
+    }
+});
 
