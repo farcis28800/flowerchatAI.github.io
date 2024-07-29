@@ -1,4 +1,4 @@
-/* Сброс стилей по умолчанию */
+/* Reset some default styles */
 * {
     margin: 0;
     padding: 0;
@@ -6,19 +6,19 @@
     font-family: 'Arial', sans-serif;
 }
 
-/* Стиль для всего тела документа */
+/* Dark theme styles */
 body {
-    background-color: #121212; /* Тёмный фон */
-    color: #E0E0E0; /* Светлый текст */
+    background-color: #121212;
+    color: #E0E0E0;
     overflow: hidden;
-    width: 100%;
-    height: 100%;
-    position: fixed;
     margin: 0;
     padding: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
-/* Заставка загрузки */
+/* Splash screen styles */
 #splash {
     position: fixed;
     top: 0;
@@ -26,35 +26,20 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #121212;
     z-index: 10;
-    transition: opacity 0.5s ease-out;
+    transition: opacity 2s ease-out;
 }
 
 #logo {
-    width: 150px; /* Размер логотипа */
+    width: 150px;
     height: auto;
-    transition: transform 0.5s ease-out;
+    transition: transform 2s ease-out;
 }
 
-.loading-text {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #E0E0E0;
-    animation: loading-animation 1s infinite; /* Анимация загрузки */
-}
-
-/* Анимация загрузки */
-@keyframes loading-animation {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-
-/* Контейнер чата */
+/* Chat container styles */
 #chat-container {
     position: fixed;
     bottom: 0;
@@ -66,12 +51,6 @@ body {
     flex-direction: column;
     padding: 10px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-}
-
-.hidden {
-    display: none;
 }
 
 #chat-box {
@@ -83,16 +62,12 @@ body {
     margin-bottom: 10px;
 }
 
-/* Контейнер поля ввода и кнопки отправки */
 #input-container {
     display: flex;
     align-items: center;
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
-    padding: 10px;
-    background-color: #1E1E1E;
-    border-top: 1px solid #333;
 }
 
 #user-input {
@@ -100,87 +75,111 @@ body {
     padding: 10px;
     border: 1px solid #333;
     border-radius: 5px 0 0 5px;
-    background-color: #121212;
+    background-color: #1E1E1E;
     color: #E0E0E0;
-    font-size: 16px; /* Размер шрифта для избегания зума */
-    outline: none; /* Убираем стандартный outline */
+    font-size: 16px; /* Устанавливаем размер шрифта, чтобы избежать зума */
 }
 
 #send-button {
     padding: 10px;
-    background-color: #4CAF50;
     border: none;
-    border-radius: 0 5px 5px 0;
+    background-color: #007bff;
     color: white;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
-    transition: background-color 0.3s;
-    outline: none; /* Убираем стандартный outline */
+    transition: background-color 0.3s ease;
+}
+
+#send-button i {
+    font-size: 16px;
 }
 
 #send-button:hover {
-    background-color: #45a049;
+    background-color: #0056b3;
 }
 
-/* Стили сообщений */
+/* Hidden class */
+.hidden {
+    display: none;
+}
+
+/* Chat message styles */
 .message {
+    padding: 10px;
+    border-radius: 5px;
     margin-bottom: 10px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    max-width: 80%;
+    max-width: 60%;
     word-wrap: break-word;
-    line-height: 1.4;
 }
 
-.user {
-    background-color: #4CAF50;
+.message.user {
+    background-color: #007bff;
     color: white;
     align-self: flex-end;
 }
 
-.bot {
+.message.bot {
     background-color: #333;
-    color: white;
+    color: #E0E0E0;
     align-self: flex-start;
 }
 
-/* Боковое меню */
+/* Scrollbar styling */
+#chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+#chat-box::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Side menu styles */
 #side-menu {
     position: fixed;
     top: 0;
-    left: -250px; /* Меню скрыто за пределами экрана */
+    left: -250px;
     width: 250px;
     height: 100%;
-    background-color: #1E1E1E;
+    background: #1E1E1E;
     color: #E0E0E0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: left 0.3s; /* Плавный переход */
-    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: left 0.3s ease;
+    z-index: 20;
     overflow-y: auto;
 }
 
 #menu-content {
     padding: 20px;
+    position: relative;
 }
 
-.menu-button {
-    background-color: transparent;
-    border: none;
-    font-size: 24px;
-    color: #E0E0E0;
-    cursor: pointer;
+#menu-content h2 {
+    margin-bottom: 10px;
+}
+
+#menu-content a {
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#menu-content a:hover {
+    text-decoration: underline;
+}
+
+#close-menu {
     position: absolute;
     top: 10px;
     right: 10px;
-}
-
-a {
-    color: #4CAF50;
-    text-decoration: none;
-    display: block;
-    margin: 10px 0;
-}
-
-/* Стиль для скрытого элемента */
-.hidden {
-    display: none;
+    background: none;
+    border: none;
+    color: #E0E0E0;
+    font-size: 24px;
+    cursor: pointer;
 }
