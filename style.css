@@ -37,7 +37,7 @@ body {
 #logo {
     width: 150px; /* Размер логотипа */
     height: auto;
-    animation: logo-spin 2s infinite linear; /* Анимация логотипа */
+    transition: transform 0.5s ease-out;
 }
 
 .loading-text {
@@ -45,12 +45,6 @@ body {
     font-size: 18px;
     color: #E0E0E0;
     animation: loading-animation 1s infinite; /* Анимация загрузки */
-}
-
-/* Анимация вращения логотипа */
-@keyframes logo-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 /* Анимация загрузки */
