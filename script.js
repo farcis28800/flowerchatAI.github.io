@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             const botMessageElement = document.createElement("div");
             botMessageElement.classList.add("message", "bot");
-            botMessageElement.textContent = "Это ответ бота на ваше сообщение.";
+            botMessageElement.textContent = "Сервер пока что не доступе :(";
             chatBox.appendChild(botMessageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         }, 1000);
