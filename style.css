@@ -65,6 +65,9 @@ body {
 #input-container {
     display: flex;
     align-items: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }
 
 #user-input {
@@ -74,6 +77,7 @@ body {
     border-radius: 5px 0 0 5px;
     background-color: #1E1E1E;
     color: #E0E0E0;
+    font-size: 16px; /* Устанавливаем размер шрифта, чтобы избежать зума */
 }
 
 #send-button {
@@ -146,10 +150,12 @@ body {
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
     transition: left 0.3s ease;
     z-index: 20;
+    overflow-y: auto;
 }
 
 #menu-content {
     padding: 20px;
+    position: relative;
 }
 
 #menu-content h2 {
@@ -165,4 +171,15 @@ body {
 
 #menu-content a:hover {
     text-decoration: underline;
+}
+
+#close-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #E0E0E0;
+    font-size: 24px;
+    cursor: pointer;
 }
