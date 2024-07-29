@@ -1,3 +1,4 @@
+
 document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
 });
@@ -74,31 +75,51 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('chatHistory', JSON.stringify(messages));
     }
 
-    function loadChatHistory() {
-        const messages = JSON.parse(localStorage.getItem('chatHistory')) || [];
-        messages.forEach(message => {
-            appendMessage(message.text, message.sender);
-        });
+    function load ChatHistory() {
+const messages = JSON.parse(localStorage.getItem(‘chatHistory’)) || [];
+messages.forEach(msg => {
+appendMessage(msg.text, msg.sender);
+});
+}
+
+// Side menu swipe functionality
+let touchStartX = 0;
+let touchEndX = 0;
+const sideMenu = document.getElementById('side-menu');
+
+document.body.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.body.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    if (touchEndX - touchStartX > 50) {
+        sideMenu.style.left = '0';
+    } else if (touchStartX - touchEndX > 50) {
+        sideMenu.style.left = '-250px';
     }
+}
 
-    // Swipe to open side menu
-    let touchStartX = 0;
-    let touchEndX = 0;
+// Close menu button
+document.getElementById('close-menu').addEventListener('click', () => {
+    sideMenu.style.left = '-250px';
+});
 
-    document.body.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
+// Adjust input container for keyboard visibility
+const inputContainer = document.getElementById('input-container');
 
-    document.body.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-
-    function handleSwipe() {
-        if (touchEndX - touchStartX > 50) {
-            document.getElementById('side-menu').style.left = '0';
-        } else if (touchStartX - touchEndX > 50) {
-            document.getElementById('side-menu').style.left = '-250px';
-        }
+window.addEventListener('resize', () => {
+    if (window.innerHeight < 600) { // Assume keyboard is visible
+        inputContainer.style.position = 'absolute';
+        inputContainer.style.bottom = '60px'; // Adjust as needed for keyboard height
+    } else {
+        inputContainer.style.position = 'fixed';
+        inputContainer.style.bottom = '0';
     }
+});
+
 });
