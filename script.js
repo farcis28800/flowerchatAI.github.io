@@ -1,85 +1,113 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const splash = document.getElementById("splash");
-    const chatContainer = document.getElementById("chat-container");
-    const sendButton = document.getElementById("send-button");
-    const userInput = document.getElementById("user-input");
-    const chatBox = document.getElementById("chat-box");
-    const sideMenu = document.getElementById("side-menu");
-    const menuButton = document.getElementById("menu-button");
-    const closeButton = document.querySelector(".menu-button");
-  
-    // Задержка для показа заставки и анимации
+document.addEventListener('DOMContentLoaded', () => {
+    // Элементы DOM
+    const splashScreen = document.getElementById('splash');
+    const chatContainer = document.getElementById('chat-container');
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const sideMenu = document.getElementById('side-menu');
+    const closeMenuButton = document.getElementById('close-menu');
+    const inputContainer = document.getElementById('input-container');
+
+    // Показать загрузку на экране заставки
+    const loadingText = document.createElement('div');
+    loadingText.classList.add('loading-text');
+    loadingText.textContent = 'Загрузка сообщений...';
+    splashScreen.appendChild(loadingText);
+
+    // Устанавливаем таймаут для скрытия заставки
     setTimeout(() => {
-        splash.style.opacity = "0";
+        splashScreen.style.opacity = '0';
         setTimeout(() => {
-            splash.style.display = "none";
-            chatContainer.style.opacity = "1"; // Показываем контейнер чата
-        }, 500); // 500ms - время перехода
-    }, 2000); // 2000ms - задержка показа заставки
+            splashScreen.style.display = 'none';
+            chatContainer.classList.remove('hidden');
+            loadChatHistory();
+        }, 500); // Время завершения анимации
+    }, 2000); // Время заставки
 
-    // Отправка сообщений
-    function sendMessage() {
-        const messageText = userInput.value.trim();
-        if (messageText === "") return;
-        const messageElement = document.createElement("div");
-        messageElement.classList.add("message", "user");
-        messageElement.textContent = messageText;
-        chatBox.appendChild(messageElement);
-        userInput.value = "";
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Ответ от бота (например, через 1 секунду)
-        setTimeout(() => {
-            const botMessageElement = document.createElement("div");
-            botMessageElement.classList.add("message", "bot");
-            botMessageElement.textContent = "Сервер пока что не доступе :(";
-            chatBox.appendChild(botMessageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 1000);
-    }
-
-    // Событие для кнопки отправки
-    sendButton.addEventListener("click", sendMessage);
-
-    // Событие для клавиши Enter
-    userInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
+    // Отправка сообщения
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
             sendMessage();
         }
     });
 
-    // Открытие бокового меню
-    menuButton.addEventListener("click", () => {
-        sideMenu.style.left = "0";
-    });
+    async function sendMessage() {
+        const messageText = userInput.value.trim();
 
-    // Закрытие бокового меню
-    closeButton.addEventListener("click", () => {
-        sideMenu.style.left = "-250px";
-    });
+        if (messageText) {
+            appendMessage(messageText, 'user');
+            saveMessage(messageText, 'user');
+            userInput.value = '';
 
-    // Свайпы для открытия/закрытия меню
-    let touchstartX = 0;
-    let touchendX = 0;
-
-    document.addEventListener("touchstart", (event) => {
-        touchstartX = event.changedTouches[0].screenX;
-    });
-
-    document.addEventListener("touchend", (event) => {
-        touchendX = event.changedTouches[0].screenX;
-        handleSwipeGesture();
-    });
-
-    function handleSwipeGesture() {
-        if (touchendX < touchstartX - 50) {
-            // Свайп влево для закрытия меню
-            sideMenu.style.left = "-250px";
-        }
-        if (touchendX > touchstartX + 50) {
-            // Свайп вправо для открытия меню
-            sideMenu.style.left = "0";
+            try {
+                const response = await fetch('http://127.0.0.1:5000/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: messageText })
+                });
+                const data = await response.json();
+                appendMessage(data.response, 'bot');
+                saveMessage(data.response, 'bot');
+            } catch (error) {
+                appendMessage('Ошибка связи с сервером.', 'bot');
+                saveMessage('Ошибка связи с сервером.', 'bot');
+            }
         }
     }
-});
+
+    function appendMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender);
+        messageDiv.textContent = text;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    
+
+    // Обработка бокового меню с использованием свайпа
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.body.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.body.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        if (touchEndX - touchStartX > 50) {
+            openMenu();
+        } else if (touchStartX - touchEndX > 50) {
+            closeMenu();
+        }
+    }
+
+    function openMenu() {
+        sideMenu.style.left = '0';
+    }
+
+    function closeMenu() {
+        sideMenu.style.left = '-250px';
+    }
+
+    closeMenuButton.addEventListener('click', closeMenu);
+
+    // Регулировка положения поля ввода при появлении клавиатуры
+    window.addEventListener('resize', () => {
+        if (window.innerHeight < 600) { // Предполагаем, что клавиатура видима
+            inputContainer.style.position = 'absolute';
+            inputContainer.style.bottom = '60px'; // Настройте в зависимости от высоты клавиатуры
+        } else {
+            inputContainer.style.position = 'fixed';
+            inputContainer.style.bottom = '0';
+        }
+    });
+
