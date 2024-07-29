@@ -1,3 +1,15 @@
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('gesturechange', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('gestureend', function (e) {
+    e.preventDefault();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // Hide splash screen and show chat container after 2 seconds
     setTimeout(() => {
